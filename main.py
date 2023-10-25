@@ -25,6 +25,10 @@ import OpenGL.GL.shaders
 import numpy
 from PIL import Image
 
+input = "color 100 100 255 255"
+msg = input.split(" ")
+shader = msg[0]
+(r, g, b, a) = ([float(x)/255 for x in msg[1:]])
 
 def main():
     # Initialize glfw
@@ -42,32 +46,6 @@ def main():
 
     # Set context to window
     glfw.make_context_current(window)
-
-    #
-
-    # Initial data
-    # Positions, colors, texture coordinates
-    '''
-    #           positions        colors          texture coords
-    quad = [   -0.5, -0.5, 0.0,  1.0, 0.0, 0.0,  0.0, 0.0,
-                0.5, -0.5, 0.0,  0.0, 1.0, 0.0,  1.0, 0.0,
-                0.5,  0.5, 0.0,  0.0, 0.0, 1.0,  1.0, 1.0,
-               -0.5,  0.5, 0.0,  1.0, 1.0, 1.0,  0.0, 1.0]
-    '''
-    #       positions      colors       texture coords
-    quad = [-1., -1., 0.,  1., 0., 0.,  0., 0.,
-             1., -1., 0.,  0., 1., 0.,  1., 0.,
-             1.,  1., 0.,  0., 0., 1.,  1., 1.,
-            -1.,  1., 0.,  1., 1., 1.,  0., 1.]
-    quad = numpy.array(quad, dtype=numpy.float32)
-    # Vertices indices order
-    indices = [0, 1, 2,
-               2, 3, 0]
-    indices = numpy.array(indices, dtype=numpy.uint32)
-
-    # print(quad.itemsize * len(quad))
-    # print(indices.itemsize * len(indices))
-    # print(quad.itemsize * 8)
 
     #
 
@@ -119,9 +97,37 @@ def main():
     # }
     # """
 
-    fragment_shader = open("shaders/red.glsl","r").read()
+    fragment_shader = open("shaders/color.glsl","r").read()
 
-    #
+    # Initial data
+    # Positions, colors, texture coordinates
+    '''
+    #           positions        colors          texture coords
+    quad = [   -0.5, -0.5, 0.0,  1.0, 0.0, 0.0,  0.0, 0.0,
+                0.5, -0.5, 0.0,  0.0, 1.0, 0.0,  1.0, 0.0,
+                0.5,  0.5, 0.0,  0.0, 0.0, 1.0,  1.0, 1.0,
+               -0.5,  0.5, 0.0,  1.0, 1.0, 1.0,  0.0, 1.0]
+    '''
+    # #       positions      colors       texture coords
+    # quad = [-1., -1., 0.,  1., 0., 0.,  0., 0.,
+    #          1., -1., 0.,  0., 1., 0.,  1., 0.,
+    #          1.,  1., 0.,  0., 0., 1.,  1., 1.,
+    #         -1.,  1., 0.,  1., 1., 1.,  0., 1.]
+    #       positions      colors       texture coords
+    quad = [-1., -1., 0.,  r, g, b,  0., 0.,
+             1., -1., 0.,  r, g, b,  1., 0.,
+             1.,  1., 0.,  r, g, b,  1., 1.,
+            -1.,  1., 0.,  r, g, b,  0., 1.]
+    quad = numpy.array(quad, dtype=numpy.float32)
+    # Vertices indices order
+    indices = [0, 1, 2,
+               2, 3, 0]
+    indices = numpy.array(indices, dtype=numpy.uint32)
+
+    # print(quad.itemsize * len(quad))
+    # print(indices.itemsize * len(indices))
+    # print(quad.itemsize * 8)
+
 
     # Compile shaders
     shader = OpenGL.GL.shaders.compileProgram(OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
@@ -217,6 +223,7 @@ def main():
     img.save(r"res/image_out.png")
 
     # JPG
+    # creo q los avatars de discord son jpg, lo mismo lloro si no funciona esto
     '''
     # Read the data and create the image
     image_buffer = glReadPixels(0, 0, image.width, image.height, GL_RGB, GL_UNSIGNED_BYTE)
