@@ -1,0 +1,16 @@
+#version 330
+
+// Grey scale shader
+
+uniform sampler2D source;
+in vec2 outTexCoords;
+
+float intensityFactor = 2.;
+
+void main()
+{
+    vec3 color = vec3(texture(source, outTexCoords).rgb);
+    float g = dot(color, vec3(0.299, 0.587, 0.114));
+
+    gl_FragColor = vec4(mix(color, vec3(g), 1.0f), 1.0f);
+}
